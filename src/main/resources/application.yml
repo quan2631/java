@@ -1,0 +1,82 @@
+server:
+  port: 8000
+  servlet:
+    context-path: /plat-gateway
+spring:
+  application:
+    name: plat-gateway
+  # 环境 dev|prod
+  profiles:
+    active: prod
+    # 始终读取安全的配置文件
+    include: securityCheck
+  cloud:
+    # Gateway routes config
+    gateway:
+      # default-filters:
+      routes:
+         # 熔断与限流测试
+        - id: wish.plat-gateway.HystrixTest
+          #下游服务地址
+          uri: http://127.0.0.1:8085/
+          order: 0
+          #网关断言匹配
+          predicates:
+            - Path=/gateway/**
+          filters:
+            #熔断过滤器
+            - name: Hystrix
+              args:
+                name: fallbackcmd
+                fallbackUri: forward:/defaultfallback
+            - StripPrefix=1
+              #限流过滤器
+            - name: RequestRateLimiter
+              args:
+               key-resolver: '#{@remoteAddKeyResolver}'
+               # 每秒最大访问次数（放令牌桶的速率）
+               redis-rate-limiter.replenishRate: 20
+               # 令牌桶最大容量（令牌桶的大小）
+               redis-rate-limiter.burstCapacity: 20
+#熔断器配置
+hystrix:
+  command:
+    default:
+      execution:
+        isolation:
+          strategy: SEMAPHORE
+          thread:
+            timeoutInMilliseconds: 3000
+  shareSecurityContext: true
+  #网关日志输出
+logging:
+  level:
+    org.springframework.cloud.gateway: TRACE
+    org.springframework.http.server.reactive: DEBUG
+    org.springframework.web.reactive: DEBUG
+    reactor.ipc.netty: DEBUG
+  config: classpath:log4j2.yml
+# Gateway redis config
+gateway:
+  store:
+    redis:
+      # 启动redis存储
+      enable: true
+# Gateway ui config default ui: http://localhost:8000/actuator/gateway/routes
+management:
+  endpoints:
+    # web方式暴露
+    web:
+      exposure:
+        # 暴露全部
+        include: "*"
+      # 配置 Endpoint 的基础路径。注：本工程部署到k8s后，心跳检测会增加项目路径
+      base-path: /plat-gateway/actuator
+    # 修改全局 endpoint 默认设置
+    enabled-by-default: true
+# 项目自定义参数 #
+app:
+  config:
+    # 是否需要anth认证
+    authFlag: true
+    protocolType: bolt

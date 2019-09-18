@@ -1,0 +1,89 @@
+apiVersion: extensions/v1beta1
+kind: Deployment
+metadata:
+  labels:
+  app: plat-gateway-release
+  name: plat-gateway-release
+  namespace: extdev
+spec:
+  replicas: 1
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxUnavailable: 1
+      maxSurge: 2
+  template:
+    metadata:
+      labels:
+        app: plat-gateway-release
+    spec:
+
+      containers :
+      - name: plat-gateway-release
+        image: reg.yondervision.com.cn:8081/rdgrp/plat-gateway-release:$BUILD_NUMBER
+        command: ["java", "-jar","/var/k8s/plat-gateway.jar"]
+        lifecycle:
+          preStop:
+            exec:
+              command: ["sleep", "15"]
+        env:
+        - name: JAVA_OPTS
+          value: -server  -Xms512m -Xmx1024m -Djava.awt.headless=true -XX:+HeapDumpOnOutOfMemoryError -XX:HeapDumpPath=/data/plat-gateway/log/plat-gateway_oom.hprof
+        ports:
+        - containerPort: 8000
+        readinessProbe:
+          httpGet:
+            path: /plat-gateway/actuator/readiness
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 20  #容器启动后第一次执行探测是需要等待多少秒。
+          periodSeconds: 5          #执行探测的频率。默认是10秒，最小1秒。
+          timeoutSeconds: 1         #探测超时时间。默认1秒，最小1秒。
+          failureThreshold: 5       #探测成功后，最少连续探测失败多少次才被认定为失败。默认是3。最小值是1。\
+        livenessProbe:      #livenessProbe是K8S认为该pod是存活的，不存在则需要kill掉，然后再新启动一个，以达到RS指定的个数。
+          httpGet:
+            path: /plat-gateway/actuator/readiness
+            port: 8000
+            scheme: HTTP
+          initialDelaySeconds: 30
+          timeoutSeconds: 5
+          successThreshold: 1
+          failureThreshold: 10
+        resources:
+          requests:
+            memory: 512Mi
+          limits:
+            memory: 1536Mi
+        volumeMounts:
+        - name: plat-data
+          mountPath: /data/
+        - name: tmp-volume
+          mountPath: /tmp/
+
+      volumes:
+      - name: plat-data
+        persistentVolumeClaim:
+          claimName: plat-data-claim
+      - name: tmp-volume
+        emptyDir: {}
+      imagePullSecrets:
+      - name: regextuser01
+
+      nodeSelector:
+        points: "extnode"
+
+
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: plat-gateway-release
+  namespace: extdev
+spec:
+  ports:
+  - name: plat-gateway
+    port: 8000
+    targetPort: 8000
+  selector:
+    app: plat-gateway-release
+  sessionAffinity: ClientIP

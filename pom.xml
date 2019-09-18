@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.1.6.RELEASE</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+	<groupId>com.wish</groupId>
+	<artifactId>plat-gateway</artifactId>
+	<name>plat-gateway</name>
+	<description>plat-gateway project for Spring Boot</description>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<spring-cloud.version>Greenwich.SR2</spring-cloud.version>
+	</properties>
+
+	<dependencies>
+		<!--default-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter</artifactId>
+			<!-- exclude掉spring-boot的默认log配置 -->
+			<exclusions>
+				<exclusion>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-starter-logging</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-devtools</artifactId>
+			<scope>runtime</scope>
+			<optional>true</optional>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<scope>test</scope>
+		</dependency>
+		<!-- log4j2依赖 -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-log4j2</artifactId>
+		</dependency>
+		<!-- 加上这个才能辨认到log4j2.yml文件 -->
+		<dependency>
+			<groupId>com.fasterxml.jackson.dataformat</groupId>
+			<artifactId>jackson-dataformat-yaml</artifactId>
+		</dependency>
+		<!--log4j2 与kafka集成 -->
+		<dependency>
+			<groupId>org.apache.kafka</groupId>
+			<artifactId>kafka-clients</artifactId>
+		</dependency>
+		<!--异步日志使用-->
+		<dependency>
+			<groupId>com.lmax</groupId>
+			<artifactId>disruptor</artifactId>
+			<!--需要指定-->
+			<version>3.4.2</version>
+		</dependency>
+		<!--@RequestBody 传参 为了制定版本-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-webflux</artifactId>
+			<version>5.1.2.RELEASE</version>
+		</dependency>
+		<!--web flux-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-webflux</artifactId>
+		</dependency>
+		<!--spring cloud gateway-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-gateway</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-gateway-core</artifactId>
+			<version>2.1.1.RELEASE</version>
+		</dependency>
+		<!--sofa rpc-->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>sofa-rpc-all</artifactId>
+			<version>5.6.0</version>
+		</dependency>
+		<!--引入sofa trace 后访问页面报错 缺少该类下的 isHttpOrMvcSuccess 方法-->
+		<!--默认2.X版本， 指定版本。因为sofa trace的版本都是3.0.5-->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>tracer-core</artifactId>
+			<version>3.0.5</version>
+		</dependency>
+		<!--web-->
+		<dependency>
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-web</artifactId>
+			<version>5.1.2.RELEASE</version>
+		</dependency>
+		<!--set get-->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.6</version>
+			<scope>provided</scope>
+		</dependency>
+		<!--tools-->
+		<dependency>
+			<groupId>com.alibaba</groupId>
+			<artifactId>fastjson</artifactId>
+			<version>1.2.58</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.commons</groupId>
+			<artifactId>commons-pool2</artifactId>
+			<version>2.6.0</version>
+		</dependency>
+		<dependency>
+			<groupId>io.lettuce</groupId>
+			<artifactId>lettuce-core</artifactId>
+			<version>5.1.7.RELEASE</version>
+		</dependency>
+		<!--redis-->
+		<dependency>
+			<groupId>org.springframework.data</groupId>
+			<artifactId>spring-data-redis</artifactId>
+			<version>2.1.2.RELEASE</version>
+		</dependency>
+		<!-- 熔断-->
+		<dependency>
+			<groupId>org.springframework.cloud</groupId>
+			<artifactId>spring-cloud-starter-netflix-hystrix</artifactId>
+		</dependency>
+		<!--限流-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-redis-reactive</artifactId>
+		</dependency>
+		<!--health-->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>healthcheck-sofa-boot-starter</artifactId>
+			<version>3.1.5</version>
+		</dependency>
+		<!--json处理-->
+		<dependency>
+			<groupId>net.sf.json-lib</groupId>
+			<artifactId>json-lib</artifactId>
+			<version>2.4</version>
+			<classifier>jdk15</classifier>
+		</dependency>
+		<!--调用平台方法 jwt 生成token-->
+		<dependency>
+			<groupId>com.wish.plat</groupId>
+			<artifactId>plat-common</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+	</dependencies>
+	<!--spring cloud-->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.springframework.cloud</groupId>
+				<artifactId>spring-cloud-dependencies</artifactId>
+				<version>${spring-cloud.version}</version>
+				<type>pom</type>
+				<scope>import</scope>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<!--热部署-->
+				<configuration>
+					<fork>true</fork>
+				</configuration>
+			</plugin>
+		</plugins>
+		<finalName>plat-gateway</finalName>
+	</build>
+	<!--发布私服，否则k8s发布提示出错-->
+	<distributionManagement>
+		<repository>
+			<id>yf-wish-releases</id>
+			<name>Wish Release</name>
+			<url>http://reg.pro.hxyd.tech:8080/repository/yf-wish-release/</url>
+		</repository>
+		<snapshotRepository>
+			<id>yf-wish-snapshots</id>
+			<name>Wish SNAPSHOTS</name>
+			<url>http://reg.pro.hxyd.tech:8080/repository/yf-wish-snapshot/</url>
+		</snapshotRepository>
+	</distributionManagement>
+</project>

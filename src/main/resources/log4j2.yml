@@ -1,0 +1,56 @@
+# 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+Configuration:
+  status: warn
+  Properties: # 定义全局变量
+    Property:
+      - name: log.level.console    #控制台日志输出的级别
+        value: info
+      - name: log.path
+        value: ./logs  #日志文件存储的位置
+      - name: project.name
+        value: plat-gateway # 项目名称
+      - name: logPattern
+        value: "%d{yyyy-MM-dd HH:mm:ss,SSS} %-5p %c{1}:%L -%m%n"
+      - name: kafkaServer
+        value: "yf009.intdev.hxyd.tech:9092"
+  Appenders:
+    Console:  # 输出到控制台
+      name: console
+      target: SYSTEM_OUT
+      ThresholdFilter:
+        level: ${sys:log.level.console} # “sys:”表示：如果VM参数中没指定这个变量值，则使用本文件中定义的缺省全局变量值
+        onMatch: ACCEPT
+        onMismatch: DENY
+      PatternLayout:
+        pattern: ${logPattern}
+    Kafka:
+      - name: KafkaAppender
+        topic: log-gateway
+        syncSend: false
+        PatternLayout:
+          pattern: ${logPattern}
+        Property:
+          - name: bootstrap.servers
+            value: ${kafkaServer}
+  Loggers:
+    AsyncLogger:
+      - name: org.springframework
+        level: info
+        includeLocation: true
+        additivity: false
+        AppenderRef:
+          - ref: console
+          - ref: KafkaAppender
+      - name: com.wish
+        level: warn
+        includeLocation: true
+        additivity: false
+        AppenderRef:
+          - ref: console
+          - ref: KafkaAppender
+    Root:
+      includeLocation: true
+      level: info    #日志输出级别
+      AppenderRef:
+        - ref: console
+        - ref: KafkaAppender

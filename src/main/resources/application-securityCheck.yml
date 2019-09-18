@@ -1,0 +1,48 @@
+security:
+  check:
+    #校验功能开关标志，true - 开，false - 关
+    check: true
+    #是否记录日志，true –记录日志，false –不记录日志
+    log: true
+    #是否检查request header信息，true –检查，false - 不检查
+    checkHeader: true
+    #是否检查request parameter信息，true –检查，false - 不检查
+    checkParameter: true
+    #是否检查request header中host信息，true –检查，false - 不检查
+    checkHost: true
+    #是否检查request header中referer信息，true –检查，false - 不检查
+    checkReferer: true
+    #示例规则第一类：匹配含有js脚本相关信息
+    regex[0]: <script>.*</script>
+    #示例规则第二类：匹配含有特殊字符信息
+    regex[1]: '[''<>\#$\\^+|&~]'
+    # POST提交会有双引号，因此其中的双引号
+    #regex[1]: '[''<>\#$\\^+|&"~]'
+    #示例规则第三类：防止目录穿越漏洞
+    regex[2]: \\./|\\.\\./
+    #示例规则第四类：匹配含有各种命令关键字信息
+    keyWords[0]: alert
+    keyWords[1]: select
+    keyWords[2]: delete
+    keyWords[3]: update
+    keyWords[4]: insert
+    keyWords[5]: exec
+    keyWords[6]: drop
+    keyWords[7]: count
+    keyWords[8]: script
+    keyWords[9]: join
+    keyWords[10]: union
+    keyWords[11]: truncate
+    keyWords[12]: password
+    keyWords[13]: and
+    keyWords[14]: or
+    keyWords[15]: cat
+    #白名单
+    headerWhiteName[0]: Accept
+    headerWhiteName[1]: User-Agent
+    parameterWhiteName[0]: tjbtn1
+    parameterWhiteName[1]: _SAFETYINFOKEY
+    hostWhiteName[0]: localhost:8000
+    hostWhiteName[1]: 127.0.0.1:8000
+    refererWhiteName[0]: localhost:8000
+    refererWhiteName[1]: 127.0.0.1:8000
