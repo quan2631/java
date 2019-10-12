@@ -4,8 +4,8 @@ import com.wish.plat.common.PlatData;
 import com.wish.plat.common.PlatRequestBody;
 import com.wish.plat.common.PlatResponseBody;
 import com.wish.plat.gateway.tokenStore.service.TokenService;
-import com.wish.plat.util.token.JwtTokenUtil;
-import com.wish.plat.util.token.JwtUserDetail;
+import com.wish.plat.gateway.util.JwtTokenUtil;
+import com.wish.plat.gateway.util.JwtUserDetail;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -73,10 +73,11 @@ public class LoginController {
         String userRoleCode= "1001";
         String userOrgCode = "100";
         String userChannel = "1";
+        String opercode = "234";
         /**
          * 2、构建需要信息及生产token
          */
-        JwtUserDetail user = new JwtUserDetail(cityID,userID,userRoleCode,userOrgCode,userChannel);
+        JwtUserDetail user = new JwtUserDetail(cityID,userID,opercode,userRoleCode,userChannel,userOrgCode,"aaaaaaaaaa");
         JwtTokenUtil jwtTokenUtil = JwtTokenUtil.getInstance();
         return jwtTokenUtil.getToken(userID, user);
     }

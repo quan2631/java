@@ -7,7 +7,7 @@ spring:
     name: plat-gateway
   # 环境 dev|prod
   profiles:
-    active: prod
+    active: dev
     # 始终读取安全的配置文件
     include: securityCheck
   cloud:
