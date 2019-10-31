@@ -53,6 +53,7 @@ public class SofaServiceCache {
                         .setProtocol("bolt") // 指定协议
                         .setDirectUrl(directUrl) // 动态指定直连地址
                         .setGeneric(true) //设置泛化调用
+                        .setRepeatedReferLimit(100) // 指定代理的次数
                         .setTimeout(10000);
                 GenericService s = consumerConfig.refer();
                 return s;
