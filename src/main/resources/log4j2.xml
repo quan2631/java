@@ -1,0 +1,44 @@
+<configuration status="warn">
+<properties>
+
+<!--${sys:catalina.home}表示linux中环境变量中的tomcat根目录 -->
+<Property name="log.level.console">info</Property>
+<Property name="log.path">./logs</Property>
+<Property name="project.name">plat-gateway</Property>
+</properties>
+<appenders>
+<console name="Console" target="SYSTEM_OUT">
+<PatternLayout charset="UTF-8" pattern="[%-5p]|@|[%X{SOFA-TraceId}]|@|[%X{SOFA-SpanId}]|@|[%d{yyyy-MM-dd HH:mm:ss,SSS}]|@|[%c]|@|%m|@|%n" />
+</console>
+<Routing name="RoutingAppender">
+        <Routes pattern="$${date:yyyy-MM-dd}-$${log.path}-$${project.name}">
+        	<IdlePurgePolicy timeToLive="1440" timeUnit="minutes"/>
+            <Route>
+           <RollingFile name="${date:yyyy-MM-dd}-${log.path}-${project.name}" fileName="${log.path}/${project.name}/${date:yyyy-MM-dd}/${project.name}.log"
+			filePattern="${log.path}/${project.name}/%d{yyyy-MM-dd}/${project.name}-%d{yyyy-MM-dd}-%i.log">
+			<Filters>
+				<ThresholdFilter level="INFO" />
+				</Filters>
+<PatternLayout charset="UTF-8" pattern="[%-5p]|@|[%X{SOFA-TraceId}]|@|[%X{SOFA-SpanId}]|@|[%d{yyyy-MM-dd HH:mm:ss,SSS}]|@|[%c]|@|%m|@|%n" />
+<!-- 限制单个文件大小 -->
+<SizeBasedTriggeringPolicy size="50 MB" />
+<!-- 限制每天文件个数 -->
+<DefaultRolloverStrategy compressionLevel="0" max="1000"/>
+</RollingFile>
+</Route>
+        </Routes>
+    </Routing>
+</appenders>
+
+<loggers>
+<!--过滤掉spring和hibernate的一些无用的debug信息 -->
+
+<logger name="com.wish" level="info"  additivity="false">
+<appender-ref ref="Console" />
+<appender-ref ref="RoutingAppender" />
+<!-- 输出日志到mongodb -->
+</logger>
+
+</loggers>
+
+</configuration>

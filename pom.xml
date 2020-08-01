@@ -47,16 +47,6 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-log4j2</artifactId>
 		</dependency>
-		<!-- 加上这个才能辨认到log4j2.yml文件 -->
-		<dependency>
-			<groupId>com.fasterxml.jackson.dataformat</groupId>
-			<artifactId>jackson-dataformat-yaml</artifactId>
-		</dependency>
-		<!--log4j2 与kafka集成 -->
-		<dependency>
-			<groupId>org.apache.kafka</groupId>
-			<artifactId>kafka-clients</artifactId>
-		</dependency>
 		<!--异步日志使用-->
 		<dependency>
 			<groupId>com.lmax</groupId>
@@ -91,8 +81,11 @@
 			<artifactId>sofa-rpc-all</artifactId>
 			<version>5.6.0</version>
 		</dependency>
-		<!--引入sofa trace 后访问页面报错 缺少该类下的 isHttpOrMvcSuccess 方法-->
-		<!--默认2.X版本， 指定版本。因为sofa trace的版本都是3.0.5-->
+		<dependency>
+			<groupId>com.alipay.sofa</groupId>
+			<artifactId>tracer-sofa-boot-starter</artifactId>
+			<version>3.0.5</version>
+		</dependency>
 		<dependency>
 			<groupId>com.alipay.sofa</groupId>
 			<artifactId>tracer-core</artifactId>

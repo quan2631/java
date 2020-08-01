@@ -55,7 +55,7 @@ logging:
     org.springframework.http.server.reactive: DEBUG
     org.springframework.web.reactive: DEBUG
     reactor.ipc.netty: DEBUG
-  config: classpath:log4j2.yml
+  config: classpath:log4j2.xml
 # Gateway redis config
 gateway:
   store:
